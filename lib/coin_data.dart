@@ -1,3 +1,7 @@
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
+
 const List<String> currenciesList = [
   'AUD',
   'BRL',
@@ -28,4 +32,14 @@ const List<String> cryptoList = [
   'LTC',
 ];
 
-class CoinData {}
+class CoinData {
+  final String coin;
+  final String fiat;
+  CoinData({this.coin, this.fiat});
+
+  dynamic getCoinData() async {
+    final data = await http.get(
+        'https://rest.coinapi.io/v1/exchangerate/${this.coin}/${this.fiat}?apikey=${DotEnv().env['API_KEY']}');
+    return jsonDecode(data.body);
+  }
+}
